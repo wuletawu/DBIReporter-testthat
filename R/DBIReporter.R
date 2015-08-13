@@ -1,10 +1,14 @@
-
-#' @importClassesFrom testthat Reporter
-NULL
-
-#' @importClassesFrom DBI DBIConnection
-
-setOldClass('proc_time')
+#' @title Class record testthat tests into a database.
+#' 
+#' @description
+#' This is an extension to testthat Reporter class.
+#' 
+#' @param dbh the database handle
+#' @examples
+#' dbh <- dbConnect(RSQLite::SQLite(), ':memory:')
+#' DBIReporter$new(dbh, 'test_results')
+#' 
+#setOldClass('proc_time')
 
 #' This reporter will gather all test results and insert them into an SQLite 
 #' database given as a open handled upoon initialization.
@@ -52,9 +56,20 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
       el <- as.double(proc.time() - start_test_time)
       fname <- if (length(test_filename)) file else ''
       
+      cat('context', str(context))
+      cat('filename', fname)
+      cat('start_test_timestamp', start_test_timestamp)
+      cat('user_CPU', el[1])
+      cat('system_CPU', el[2])
+      cat('real_CPU', el[3])
+      
       test_info <- data.frame(context = context,
                         filename = fname,
-                        test = test,
+                        passed = result$passed,
+                        error = result$error,
+                        skipped = result$skipped,
+                        failure_msg = result$failure_msg,
+                        success_msg = result$success_msg,
                         start_test_timestamp = start_test_timestamp,
                         end_test_timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
                         user_CPU = el[1],
@@ -71,6 +86,12 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
       )
 )
 
+
+#' @importClassesFrom testthat Reporter
+NULL
+
+#' @importClassesFrom DBI DBIConnection
+NULL
 
 
 
