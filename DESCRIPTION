@@ -1,12 +1,14 @@
 Package: DBIReporter
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: Database Reporter sub-class for testthat Reporter class
+Version: 0.3
 Date: 2015-08-12
-Author: Who wrote it
+Authors@R: person("Bruce", "Lowther", email = "brucelowther@gmail.com", role = c(" aut", "cre"))
 Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Description: I need a reporter that persists results in a database for future 
+reference. This reporter should write each result to the DBI connection
+provided and table name provided in the constructor.
+License: GPL-3
 Imports:
     testthat,
     DBI
