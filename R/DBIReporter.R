@@ -52,16 +52,14 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
     
     add_result = function(result) {
       callSuper(result)
+
+      #if the filename is blank, then use an empty string?
+      fname <- if (length(test_filename)) test_filename else ''
       
+      # Calculations for delta time 
       el <- as.double(proc.time() - start_test_time)
-      fname <- if (length(test_filename)) file else ''
       
-      cat('context', str(context))
-      cat('filename', fname)
-      cat('start_test_timestamp', start_test_timestamp)
-      cat('user_CPU', el[1])
-      cat('system_CPU', el[2])
-      cat('real_CPU', el[3])
+      print.DBIReporter()
       
       test_info <- data.frame(context = context,
                         filename = fname,
@@ -81,6 +79,13 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
     
     start_file = function(name) {
       test_filename <<- name
+    },
+    
+    print.DBIReporter = function() {
+      cat(sprintf('context:[%s]\n', context))
+      cat(sprintf('filename:[%s]\n', test_filename))
+      cat(sprintf('start_test_timestamp:[%s]\n', start_test_timestamp))
+      cat(start_test_time, "\n")
     }
     
       )
