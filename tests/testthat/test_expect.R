@@ -31,6 +31,4 @@ rptr$end_test()
 
 rptr$end_context()
 
-dbReadTable(dbh, 'test_info', test_info)
-
-
+dbReadTable(dbh, 'test_info')
