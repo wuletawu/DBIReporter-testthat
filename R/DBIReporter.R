@@ -30,6 +30,7 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
   methods = list(
     ##must pass database handle that is open and ready for action.
     initialize = function(dbh, table_name, ...) {
+      stopifnot(dbIsValid(dbh))
       db_handle <<- dbh
       tbl_name <<- table_name
       callSuper(...)
@@ -59,7 +60,7 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
       # Calculations for delta time 
       el <- as.double(proc.time() - start_test_time)
       
-      print.DBIReporter()
+      #print.DBIReporter()
       
       test_info <- data.frame(context = context,
                         filename = fname,
@@ -68,13 +69,13 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
                         skipped = result$skipped,
                         failure_msg = result$failure_msg,
                         success_msg = result$success_msg,
-                        start_test_timestamp = start_test_timestamp,
+                        start_test_timestamp = format(start_test_timestamp, "%Y-%m-%d %H:%M:%S"),
                         end_test_timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
                         user_CPU = el[1],
                         system_CPU = el[2],
                         real_CPU = el[3])
 
-      dbWriteTable(db_handle, tbl_name, test_info)
+      dbWriteTable(db_handle, tbl_name, test_info, append=TRUE)
     },
     
     start_file = function(name) {

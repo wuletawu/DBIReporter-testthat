@@ -1,3 +1,5 @@
+# Test using non-Report class methods.
+# this should verify that it'll work when using testthat framework.
 
 require(DBI)
 require(RSQLite)
@@ -15,7 +17,9 @@ get_reporter()$start_file('test_first_simple.R')
 
 
 expect_that(TRUE, is_false(), "something is wrong",  "Something is so right")
-get_reporter()
 expect_that(TRUE, is_true(), "something is wrong",  "Something is so right")
-get_reporter()
 
+foo <- dbReadTable(dbh, 'test_info')
+foo
+
+dbDisconnect(dbh)
