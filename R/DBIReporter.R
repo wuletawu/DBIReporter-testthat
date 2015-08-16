@@ -3,16 +3,14 @@
 #' @description
 #' This is an extension to testthat Reporter class.
 #' 
+#' This reporter will gather all test results and insert them into a DBI 
+#' database given as a open handled on new.
+#'
 #' @param dbh the database handle
 #' @examples
 #' dbh <- dbConnect(RSQLite::SQLite(), ':memory:')
-#' DBIReporter$new(dbh, 'test_results')
+#' myReporter <- DBIReporter$new(dbh, 'test_results')
 #' 
-#setOldClass('proc_time')
-
-#' This reporter will gather all test results and insert them into an SQLite 
-#' database given as a open handled upoon initialization.
-#'
 #' @export
 #' @export DBIReporter
 #' @aliases DBIReporter
@@ -21,7 +19,7 @@
 DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
   fields = list(
     tbl_name = 'character', #the name of the table to append data.
-    start_reporter_timestamp = 'POSIXct' # capturing hte time that the reporter was started.  Same 
+    start_run_timestamp = 'POSIXct', # capturing the start of this run -- may encompass many test files...  this timestamp will be constant for all tests that were initiated by this run.
     start_test_timestamp = 'POSIXct',  #using YYYY-MM-DD HH:MM:SS for database but want to keep the true rep here.
     start_test_time = 'proc_time', # The test runtime based on cpu ticks
     test_filename = 'character', #the name of the file that is associated with this test.
@@ -34,6 +32,7 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
       stopifnot(dbIsValid(dbh))
       db_handle <<- dbh
       tbl_name <<- table_name
+      start_run_timestamp <<-Sys.time()
       callSuper(...)
     },
     
@@ -54,6 +53,7 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
     
     add_result = function(result) {
       callSuper(result)
+      #result is an expectation instance.
 
       #if the filename is blank, then use an empty string?
       fname <- if (length(test_filename)) test_filename else ''
@@ -61,10 +61,9 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
       # Calculations for delta time 
       el <- as.double(proc.time() - start_test_time)
       
-      #print.DBIReporter()
-      
       test_info <- data.frame(context = context,
                         filename = fname,
+                        start_run_timestamp = format(start_run_timestamp, "%Y-%m-%d %H:%M:%S"),
                         passed = result$passed,
                         error = result$error,
                         skipped = result$skipped,
@@ -81,13 +80,6 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
     
     start_file = function(name) {
       test_filename <<- name
-    },
-    
-    print.DBIReporter = function() {
-      cat(sprintf('context:[%s]\n', context))
-      cat(sprintf('filename:[%s]\n', test_filename))
-      cat(sprintf('start_test_timestamp:[%s]\n', start_test_timestamp))
-      cat(start_test_time, "\n")
     }
     
       )
