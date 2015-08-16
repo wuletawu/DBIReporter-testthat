@@ -28,6 +28,7 @@ test_that("t.test meets p requirement", {
 
 checkData.t.test <- function(n, p.expect = 0.95)
 {
+  #setting the seed to keep this repeatable
   set.seed(1010)
   
   a.mean <- 100
@@ -49,9 +50,19 @@ checkData.t.test <- function(n, p.expect = 0.95)
 # checkData.t.test(100000)
 
 test_that("t.test meets p requirement", {
+  # if my math is right, some of these will succeed, but some will also fail.
+  # 
   sizes <- (1:10)*10000
   lapply(sizes, checkData.t.test)
 })
 
+#' test that we log an error in the database.
+test_that("Not expecting a fatal error", {
+  stopifnot(FALSE, "this is a failure... Whoopsie")
+}
+          )
 
+test_that('Skipping this test.', {
+  skip("this is not the test you were looking for.")
+})
 
