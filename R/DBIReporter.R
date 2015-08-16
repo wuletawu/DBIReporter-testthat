@@ -21,7 +21,8 @@
 DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
   fields = list(
     tbl_name = 'character', #the name of the table to append data.
-    start_test_timestamp = 'POSIXct',  #using YYYY-MM-DD HH:MM:SS for database
+    start_reporter_timestamp = 'POSIXct' # capturing hte time that the reporter was started.  Same 
+    start_test_timestamp = 'POSIXct',  #using YYYY-MM-DD HH:MM:SS for database but want to keep the true rep here.
     start_test_time = 'proc_time', # The test runtime based on cpu ticks
     test_filename = 'character', #the name of the file that is associated with this test.
     db_handle = 'DBIConnection'  #instance variable holding database handle passed on new.
@@ -29,7 +30,7 @@ DBIReporter <- setRefClass("DBIReporter", contains = "Reporter",
   
   methods = list(
     ##must pass database handle that is open and ready for action.
-    initialize = function(dbh, table_name, ...) {
+    initialize = function(dbh, table_name = 'test_info', ...) {
       stopifnot(dbIsValid(dbh))
       db_handle <<- dbh
       tbl_name <<- table_name

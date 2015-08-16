@@ -1,18 +1,22 @@
 Package: DBIReporter
-Type: Package
+Version: 0.0.0.1000
 Title: Database Reporter sub-class for testthat Reporter class
-Version: 0.3
-Date: 2015-08-12
-Authors@R: person("Bruce", "Lowther", email = "brucelowther@gmail.com", role = c(" aut", "cre"))
-Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: I need a reporter that persists results in a database for future 
 reference. This reporter should write each result to the DBI connection
 provided and table name provided in the constructor.
-License: GPL-3
+Authors@R: c( 
+    person("Bruce", "Lowther", email = "brucelowther@gmail.com", role = c(" aut", "cre"))
+	   )
+URL: https://github.com/osunderdog/DBIReporter-testthat
+BugReports: https://github.com/osunderdog/DBIReporter-testthat/issues
+Depends:
+    R (>=3.1.0),
+    methods
 Imports:
     testthat,
     DBI
 Suggests:
     RSQLite
+License: GPL-3
 Collate:
     'DBIReporter.R'
